@@ -664,6 +664,10 @@
 .pl-par-sola{ background:#fff; border:1px solid #E3E3DA; border-radius:12px; padding:12px 16px; margin-bottom:10px; }
 .pl-par-sola .pl-nota{ margin-top:10px; }
 
+/* dopo la consegna: «Allenati» nei tre livelli dello stesso dolce (11/11/2026, Mauro) */
+.pl-allena{ display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; margin-left:8px; }
+.pl-allena-t{ font-size:14px; color:var(--b-muted); }
+.pl-allena .btn-ghost{ padding:6px 12px; font-size:14px; }
 /* la bella copia e il confronto */
 .pl-cortesia{ padding:22px 24px 26px; }
 .pl-ct{ font-size:19px; font-weight:600; color:var(--b-b); margin-bottom:12px; }
@@ -4054,7 +4058,7 @@
     // CEDOLINO: la "bella copia" e' l’esercizio finale. Arriva o il lavoro dell'alunno
     // ({tipo:'cedolino'}) o la soluzione dell'archivio (che ha i passaggi attesi).
     if(D && D.tipo === 'cedolino') return CED.cortesia(D.stato || null);
-    if(D && (D.passaggi || D.stato || D.imp || D.ce)) return CED.cortesiaSoluzione(D);   /* la soluzione dell'archivio */
+    if(D && (D.passaggi || D.stato || D.imp || D.ce || D.paragrafi || D.righe)) return CED.cortesiaSoluzione(D);   /* la soluzione dell'archivio (Piccoli lievitati: paragrafi e righe) */
     var t = D.t, r = D.r;
     var vCitta = cittaS(t.v_cap,t.v_comune,t.v_prov), vLine = [t.v_indirizzo,vCitta].filter(Boolean).join(' · ');
     var vFisc = []; if(t.v_piva) vFisc.push('P. IVA ' + t.v_piva); if(t.v_cf) vFisc.push('C.F. ' + t.v_cf);
@@ -5727,6 +5731,7 @@
     var ST = null;      // lo stato del lavoro aperto
     var ATTIVO = null;  // il riquadro acceso (solo schermo, non si salva)
     var LIV_NOME = { f:'Livello facile', m:'Livello medio', d:'Livello difficile' };
+    var LEGATO = false; // i tasti si collegano al documento una volta sola
 
     /* ---------- l'esercizio dall'archivio ---------- */
     function esercizio(es){
@@ -5831,9 +5836,18 @@
     function boxDomanda(S){
       return S.domanda ? ('<div class="pl-domanda"><div class="pl-domanda-eti">Domanda di economia sull’UdA</div><p>' + escB(S.domanda) + '</p></div>') : '';
     }
+    /* La risposta corretta ricavata dall'archivio che l'alunno ha gia': facile e medio dai loro paragrafi, il difficile dal
+       medio dello stesso dolce (la sua soluzione e' la stessa). Serve all'allenamento, dove il cloud la soluzione la da'
+       solo per gli esercizi consegnati. */
+    function soluzioneLocale(es){
+      var S = struttura(es);
+      if(S.liv === 'd' && es) S = struttura(String(es).replace(/D$/, 'M'));
+      if(!S.par.length) return null;
+      return { paragrafi:S.par.map(function(x, k){ return testoPulito(S, k); }) };
+    }
     function corpoSoluzione(sol, S){
       var par = (sol && sol.paragrafi && sol.paragrafi.length) ? sol.paragrafi : ((sol && sol.righe) ? [sol.righe] : null);
-      if(!par && S && S.par.length) par = S.par.map(function(x, k){ return testoPulito(S, k); });
+      if(!par && S){ var loc = soluzioneLocale(S.es); if(loc) par = loc.paragrafi; }
       if(!par) return '<i>—</i>';
       return '<div class="pl-sol">' + par.map(function(r){ return r.map(function(x){ return '<p>' + escB(x) + '</p>'; }).join(''); }).join('') + '</div>';
     }
@@ -6006,12 +6020,15 @@
       prepara(null);
       lega('btn-fin', function(){ try{ byId('cortesia-page').innerHTML = buildCortesia(raccogliB()); show('cortesia-view'); }catch(e){} });
       lega('pl-ricomincia', ricomincia);
-      var area = byIdC('bil-area');
-      if(area && !area.getAttribute('data-pl')){
-        area.setAttribute('data-pl', '1');
-        area.addEventListener('click', attivoQui);
-        area.addEventListener('keydown', function(e){ if((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('[data-id]')){ e.preventDefault(); attivoQui(e); } });
-        area.addEventListener('input', function(e){ if(e.target && e.target.id === 'pl-testo' && !SOLA && ST){ ST.testo = e.target.value; cresci(e.target); scriviStato(); } });
+      /* 11/11/2026, trovato da Mauro: prima i tasti si collegavano al riquadro dell'esercizio con un segno scritto DENTRO la
+         pagina; riaprendo un esercizio gia' iniziato l'app ricarica la pagina salvata, segno compreso, e i tasti non si
+         collegavano piu' (lo scritto restava sullo schermo ma non nella risposta). Ora si collegano una volta sola al
+         documento, e valgono per qualunque riquadro dell'esercizio ci sia in quel momento. */
+      if(!LEGATO){
+        LEGATO = true;
+        document.addEventListener('click', function(e){ if(e.target && e.target.closest && e.target.closest('#bil-area')) attivoQui(e); });
+        document.addEventListener('keydown', function(e){ if((e.key === 'Enter' || e.key === ' ') && e.target && e.target.closest && e.target.closest('#bil-area [data-id]')){ e.preventDefault(); attivoQui(e); } });
+        document.addEventListener('input', function(e){ if(e.target && e.target.id === 'pl-testo' && !SOLA && ST){ ST.testo = e.target.value; cresci(e.target); scriviStato(); } });
       }
       accendiPrimo();
       disegna();
@@ -6029,6 +6046,7 @@
     }
     function raccogliB(){
       if(!ST){ var s = statoSalvato(); return { tipo:'cedolino', stato:(s ? normalizza(s) : normalizza({}, esCorrente())) }; }
+      var ta = byIdC('pl-testo'); if(ta && !SOLA){ ST.testo = ta.value; scriviStato(); }
       return { tipo:'cedolino', stato:JSON.parse(JSON.stringify(ST)) };
     }
     function mostraSoluzione(sol, silenzioso){
@@ -6067,6 +6085,7 @@
       confronto: confronto,
       statoSoluzione: statoSoluzione,
       pieno: pieno,
+      soluzioneLocale: soluzioneLocale,
       livello: function(es){ return struttura(es).liv; }
     };
   })();
@@ -7016,10 +7035,23 @@
       // l'alunno rivede la correzione o si allena, l'app lo segue da sola (prima serviva uscire e rientrare col PIN).
       var b1 = document.createElement('button'); b1.className = 'btn-ghost'; b1.style.fontFamily = 'inherit'; b1.textContent = 'Rivedi la correzione';
       b1.addEventListener('click', function(){ STATE.ritornoFn = ritorno; apriSoluzioneCompito(f); });
-      var b2 = document.createElement('button'); b2.className = 'btn-green'; b2.style.fontFamily = 'inherit'; b2.textContent = 'Allenati';   // btn-compila ha lo stile solo dentro i menu'
-      b2.addEventListener('click', function(){ STATE.ritornoFn = ritorno; apriEsercitazione(f); });
-      riga.appendChild(b1); riga.appendChild(b2); host.appendChild(riga);
+      riga.appendChild(b1); riga.appendChild(bottoniAllenati(f, function(){ STATE.ritornoFn = ritorno; })); host.appendChild(riga);
     });
+  }
+  /* Piccoli lievitati (11/11/2026, Mauro): dopo la consegna ci si allena nei TRE livelli dello stesso dolce, non solo in quello
+     consegnato. Gli id dell'archivio sono PLnnF, PLnnM, PLnnD. */
+  function variantiDolce(f){
+    var base = String((f && f.id) || '').replace(/[FMD]$/, '');
+    return ['F', 'M', 'D'].map(function(l){ return (FATTURE || []).find(function(x){ return x.id === base + l; }); }).filter(Boolean);
+  }
+  function bottoniAllenati(f, prima){
+    var box = document.createElement('span'); box.className = 'pl-allena';
+    var t = document.createElement('span'); t.className = 'pl-allena-t'; t.textContent = 'Allenati:'; box.appendChild(t);
+    variantiDolce(f).forEach(function(v){
+      var b = document.createElement('button'); b.className = 'btn-ghost'; b.style.fontFamily = 'inherit'; b.textContent = v.difficoltaNome || v.titolo;
+      b.addEventListener('click', function(){ if(prima) prima(); apriEsercitazione(v); }); box.appendChild(b);
+    });
+    return box;
   }
   // Maschera: TUTTE le fatture dell'archivio. Fatte → "✓ Consegnato" + "Vedi soluzione"; da fare → "Compila".
   function renderCompitiPicker(){
@@ -7060,8 +7092,7 @@
         var vs = document.createElement('button'); vs.className = 'btn-ghost vedi-sol'; vs.textContent = 'Vedi soluzione'; vs.style.marginLeft = '8px';
         vs.addEventListener('click', function(){ apriSoluzioneCompito(f); }); cta.appendChild(vs);
         // Già consegnato: ora può ALLENARSI liberamente sulla stessa fattura, quante volte vuole. Nessun invio al prof.
-        var al = document.createElement('button'); al.className = 'btn-ghost'; al.textContent = 'Allenati'; al.style.marginLeft = '8px';
-        al.addEventListener('click', function(){ apriEsercitazione(f); }); cta.appendChild(al);
+        cta.appendChild(bottoniAllenati(f));   // Piccoli lievitati: allenamento nei tre livelli del dolce
       } else {
         var classeQ = !!(daConsegnare || inCorsoClasse || q.bozzaClasse);
         var b = document.createElement('button'); b.className = 'btn-compila';
@@ -7190,6 +7221,8 @@
       var id = STATE.assegnataId, tentativi = 0;
       (function prova(){
         conSoluzione(id, function(sol){
+          // Piccoli lievitati (11/11/2026): nell'allenamento si fanno anche livelli mai consegnati, che il cloud non da'
+          if(!sol && CED.soluzioneLocale) sol = CED.soluzioneLocale(id);
           if(!sol && ++tentativi < 3){ setTimeout(prova, 2000); return; }
           if(bottone) bottone.disabled = false;
           if(STATE.assegnataId !== id || !STATE.esercitazione) return;   // nel frattempo e' uscito dall'allenamento
@@ -7949,7 +7982,7 @@
      il lavoro, telefono e cloud). Mai sulla schermata del consegnato, mai durante una consegna, mai al docente.
      Il ricarico e' un F5: in classe si torna sul foglio, nei compiti alla lista. Al massimo una volta ogni
      10 minuti, cosi' un sito che risponde a meta' non la fa ricaricare in continuazione. */
-  var VERSIONE_APP = '20261111-02';
+  var VERSIONE_APP = '20261111-03';
   (function(){
     var ultimo = 0, inCorso = false;
     function visibile(id){ var el = byId(id); return !!(el && el.style.display !== 'none'); }
