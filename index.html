@@ -668,6 +668,12 @@
 .pl-allena{ display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; margin-left:8px; }
 .pl-allena-t{ font-size:14px; color:var(--b-muted); }
 .pl-allena .btn-ghost{ padding:6px 12px; font-size:14px; }
+/* sul telefono, nella schermata del consegnato: «Allenati:» su una riga sua e i tre livelli insieme sotto, al centro
+   (prima «Difficile» andava a capo da solo, a sinistra) */
+@media (max-width:480px){
+  #blocco-azioni .pl-allena{ justify-content:center; margin-left:0; }
+  #blocco-azioni .pl-allena-t{ flex-basis:100%; text-align:center; }
+}
 /* la bella copia e il confronto */
 .pl-cortesia{ padding:22px 24px 26px; }
 .pl-ct{ font-size:19px; font-weight:600; color:var(--b-b); margin-bottom:12px; }
@@ -8002,7 +8008,7 @@
      il lavoro, telefono e cloud). Mai sulla schermata del consegnato, mai durante una consegna, mai al docente.
      Il ricarico e' un F5: in classe si torna sul foglio, nei compiti alla lista. Al massimo una volta ogni
      10 minuti, cosi' un sito che risponde a meta' non la fa ricaricare in continuazione. */
-  var VERSIONE_APP = '20261111-04';
+  var VERSIONE_APP = '20261111-05';
   (function(){
     var ultimo = 0, inCorso = false;
     function visibile(id){ var el = byId(id); return !!(el && el.style.display !== 'none'); }
