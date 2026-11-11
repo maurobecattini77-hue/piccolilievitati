@@ -6999,6 +6999,9 @@
   // SCHERMATA DEL CONSEGNATO in classe (24/09/2026): chi ha consegnato lui un esercizio puo' rivedere la correzione
   // e allenarsi sullo stesso esercizio. Verifiche e consegne fatte dal docente: solo il messaggio.
   function mostraConsegnatoAlunno(titolo, msg){
+    // (11/11/2026) Tornando qui dall'allenamento restavano nella barra in alto «Ricomincia da capo» e «Indietro»,
+    // che su questa schermata non c'entrano (e «Indietro» portava ai compiti). Nome ed «Esci» restano.
+    if(STATE.modalitaCompiti || STATE.esercitazione){ var azBarra = document.querySelector('#topbar-info .tb-azioni'); if(azBarra) azBarra.innerHTML = ''; }
     STATE.modalitaCompiti = false; STATE.esercitazione = false; STATE.consegnata = true;
     var pin = STATE.studente ? STATE.studente.pin : '';
     mostraBloccoMsg('✅', titolo || 'Consegnato', msg, '#2f7d54');
@@ -7056,6 +7059,9 @@
   // Maschera: TUTTE le fatture dell'archivio. Fatte → "✓ Consegnato" + "Vedi soluzione"; da fare → "Compila".
   function renderCompitiPicker(){
     STATE.modalitaCompiti = true; STATE.esercitazione = false; STATE.menuBackFn = null; STATE.archivioMode = false;
+    // (11/11/2026) Sull'elenco dei compiti i pulsanti dell'esercizio appena lasciato («Torna ai compiti», «Ricomincia
+    // da capo») non servono: restavano nella barra in alto e sul telefono la raddoppiavano. Nome ed «Esci» restano.
+    var azBarra = document.querySelector('#topbar-info .tb-azioni'); if(azBarra) azBarra.innerHTML = '';
     byId('menu-fatture').classList.remove('arch5');
     var eb = byId('btn-esci-menu'); if(eb) eb.textContent = 'Esci';
     var nome = STATE.studente ? STATE.studente.nome : '';
@@ -7924,6 +7930,12 @@
     var pinR = null;
     try{ pinR = localStorage.getItem('pl_ultimo_pin'); }catch(e){}
     if(!pinR || !SB){ goGate(); return; }
+    /* (11/11/2026, Mauro) IL DOCENTE NON RIENTRA DA ALUNNO. Sul suo computer provava con un PIN della classe di
+       prova e poi riapriva l'app: il rientro entro mezz'ora lo rimetteva dentro da alunno ogni volta, anche con
+       la dashboard aperta in un'altra scheda. Se questo browser e' riconosciuto come docente (accesso salvato,
+       cioe' non ha premuto «Esci» dalla dashboard) non si rientra da soli: schermata d'ingresso, col PIN e con
+       «Accesso docente». Sui dispositivi degli alunni quell'accesso non c'e' mai, e li' non cambia niente. */
+    var daAlunno = function(){
     rientroSeNonAzzerato(pinR, function(){
     try{
       SB.rpc('pl_rientro', { p_pin: pinR, p_dispositivo: idDispositivo() }).then(function(r){
@@ -7944,6 +7956,14 @@
       }, function(){ goGate(); });
     }catch(e){ goGate(); }
     });
+    };
+    try{
+      if(!SB.auth){ daAlunno(); return; }
+      SB.auth.getSession().then(function(r){
+        if(r && r.data && r.data.session){ goGate(); return; }
+        daAlunno();
+      }, function(){ daAlunno(); });
+    }catch(e){ daAlunno(); }
   }
   /* Controllo silenzioso del collegamento: parte all'apertura e ripete ogni 15 secondi finché il telefono non
      riesce a raggiungere il cloud. Serve a scoprire i telefoni senza linea PRIMA della verifica, non durante.
@@ -7982,7 +8002,7 @@
      il lavoro, telefono e cloud). Mai sulla schermata del consegnato, mai durante una consegna, mai al docente.
      Il ricarico e' un F5: in classe si torna sul foglio, nei compiti alla lista. Al massimo una volta ogni
      10 minuti, cosi' un sito che risponde a meta' non la fa ricaricare in continuazione. */
-  var VERSIONE_APP = '20261111-03';
+  var VERSIONE_APP = '20261111-04';
   (function(){
     var ultimo = 0, inCorso = false;
     function visibile(id){ var el = byId(id); return !!(el && el.style.display !== 'none'); }
