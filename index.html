@@ -624,9 +624,18 @@
 .pl-rq.attivo .pl-n{ background:#fff; color:var(--pl-blu); }
 .pl-rq.pieno{ background:#fff; border-color:#A9A79C; color:#262420; padding-left:8px; }
 .pl-rq.pieno.attivo{ background:var(--pl-blu); border-color:var(--pl-blu); color:#fff; }
-.pl-rq.ok{ background:var(--pl-okt); border-color:var(--pl-ok); color:#262420; cursor:default; padding-left:8px; }
-.pl-rq.no{ background:var(--pl-not); border-color:var(--pl-no); color:#262420; cursor:default; padding-left:8px; }
-.pl-giusta{ color:#2f5b45; font-weight:600; }
+/* la parola scelta entra nella frase in semigrassetto, senza riquadro (11/11/2026, Mauro: «non con quel cerchio») */
+.pl-sc{ font-weight:600; color:#1f4f78; cursor:pointer; border-radius:4px; }
+.pl-sc:hover{ background:#eaf1f8; }
+.pl-sc.fermo{ cursor:default; color:#262420; }
+.pl-sc.fermo:hover{ background:none; }
+.pl-vuoto{ color:#9a968c; }
+/* la correzione dopo la consegna: verde le giuste, rosse le sbagliate con accanto la giusta */
+.pl-ok, .pl-no, .pl-cor{ font-weight:600; border-radius:4px; padding:0 3px; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+.pl-ok, .pl-cor{ color:#2f6b4a; background:#e8f3ec; }
+.pl-no{ color:#a3354f; background:#fbeaee; }
+.pl-freccia{ color:#827F75; }
+.pl-legenda{ font-size:14.5px; line-height:1.5; color:#6f6c63; margin:0 0 10px; }
 .pl-scelte{ margin-top:14px; background:#F4F6F9; border:1.5px solid #D5DCE4; border-left:5px solid var(--pl-blu); border-radius:12px; padding:12px 12px 4px; }
 .pl-scelte-t{ font-size:15.5px; font-weight:600; color:var(--pl-blu-s); }
 .pl-scelte-t .pl-n{ background:var(--pl-blu); margin:0 1px; }
@@ -635,18 +644,13 @@
 .pl-opz:hover{ border-color:var(--pl-blu); }
 .pl-opz[aria-pressed="true"]{ border-color:var(--pl-blu); background:#eaf1f8; }
 .pl-com{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:14px; }
-.pl-contr{ font-family:inherit; font-size:15px; font-weight:600; border-radius:10px; padding:10px 18px; border:1px solid #b34400; background:#E65900; color:#fff; cursor:pointer; }
+.pl-avanti{ font-family:inherit; font-size:15px; font-weight:600; border-radius:10px; padding:10px 18px; border:1px solid #b34400; background:#E65900; color:#fff; cursor:pointer; }
+.pl-rifai{ font-family:inherit; font-size:14.5px; font-weight:600; border-radius:10px; padding:9px 14px; border:1px solid var(--b-line2); background:#fff; color:#57534a; cursor:pointer; }
 .pl-msg{ font-size:15px; font-weight:600; color:#8a6d22; }
-.pl-esito{ margin-top:12px; }
-.pl-somma{ font-size:15.5px; font-weight:600; border-radius:10px; padding:9px 12px; border:1.5px solid; }
-.pl-somma.bene{ background:var(--pl-okt); border-color:var(--pl-ok); color:#2f5b45; }
-.pl-somma.male{ background:#fff; border-color:#D9DACF; color:#33312c; }
 .pl-nota{ font-size:15px; line-height:1.5; color:#33312c; border-radius:10px; padding:9px 12px; margin-top:8px; border:1.5px solid var(--pl-no); background:var(--pl-not); overflow-wrap:break-word; }
 .pl-nota b{ font-weight:600; }
-.pl-fine{ background:#fff; border:1.5px solid #8AC5C1; border-top:4px solid #4E918C; border-radius:16px; padding:16px 20px; margin-top:22px; }
-.pl-totale{ font-size:16.5px; font-weight:600; background:var(--pl-okt); border:1.5px solid var(--pl-ok); border-radius:12px; padding:10px 14px; margin:0 0 12px; color:#2f5b45; }
-.pl-fine-k{ font-size:13.5px; font-weight:600; color:#2f635f; }
-.pl-fine-t{ font-size:21px; font-weight:600; color:#262420; margin:2px 0 8px; }
+.pl-fine{ background:#fff; border:1.5px solid #D9DACF; border-top:4px solid #E65900; border-radius:16px; padding:16px 20px; margin-top:22px; }
+.pl-fine-t{ font-size:20px; font-weight:600; color:#262420; margin:0 0 8px; }
 .pl-sol p{ font-size:16.5px; line-height:1.65; color:#262420; margin:0 0 10px; }
 .pl-sol{ background:#fff; border:1px solid #D9DACF; border-left:5px solid #5C8B73; border-radius:12px; padding:14px 18px; }
 .pl-scrivi{ display:block; width:100%; box-sizing:border-box; min-height:280px; margin:8px 0 6px; font-family:inherit; font-size:17px; line-height:1.55;
@@ -655,9 +659,10 @@
 .pl-scrivi:focus{ outline:none; border-color:var(--pl-blu); background:#fff; }
 .pl-scritto{ white-space:pre-wrap; font-size:16.5px; line-height:1.6; background:#fff; border:1px solid #D9DACF; border-radius:12px; padding:14px 18px; color:#262420; overflow-wrap:break-word; }
 .pl-scritto.vuoto{ color:#b4472f; font-style:italic; }
-.pl-conto{ font-size:15px; font-weight:600; color:#33312c; margin:0 0 10px; }
+.pl-conto{ display:inline-block; font-size:16.5px; font-weight:600; color:#33312c; background:#fff; border:1.5px solid #D9DACF; border-radius:10px; padding:8px 14px; margin:0 0 10px; }
+.pl-conto.bene{ background:var(--pl-okt); border-color:var(--pl-ok); color:#2f5b45; }
 .pl-par-sola{ background:#fff; border:1px solid #E3E3DA; border-radius:12px; padding:12px 16px; margin-bottom:10px; }
-.pl-par-sola .pl-rq{ cursor:default; }
+.pl-par-sola .pl-nota{ margin-top:10px; }
 
 /* la bella copia e il confronto */
 .pl-cortesia{ padding:22px 24px 26px; }
@@ -665,10 +670,9 @@
 .pl-cortesia-k, .pl-conf-k{ font-size:14px; font-weight:600; color:var(--b-muted); margin:6px 0 8px; }
 .pl-cortesia-k.giusto, .pl-conf-k.giusto{ color:#2f635f; }
 .pl-conf-wrap{ padding:18px 20px 24px; container-type:inline-size; }
-.pl-conf{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
-.pl-conf > div{ min-width:0; }
-.cx-page.bil-largo{ max-width:1500px; }
-@container (max-width: 980px){ .pl-conf{ grid-template-columns:1fr; } }
+.pl-conf-wrap .pl-conf-k{ font-size:16px; color:#33312c; margin:18px 0 10px; }
+.pl-conf-wrap .pl-conf-k.giusto{ color:#2f635f; margin-top:26px; }
+.cx-page.bil-largo{ max-width:980px; }
 
 /* il testo del dolce a sinistra, fermo, sul computer; sul telefono resta in alto */
 .vb-op b{ font-weight:600; }
@@ -676,9 +680,6 @@
   body.bil-fianco #verifica-bar{ position:fixed; left:24px; top:96px; bottom:16px; width:360px; max-width:none; margin:0; padding:0 !important; overflow:auto; z-index:5; }
   body.bil-fianco #verifica-bar .verifica{ margin:0; }
   body.bil-fianco #editor{ max-width:none; margin-left:408px; margin-right:24px; padding-left:0; padding-right:0; }
-}
-@media (max-width: 900px){
-  .pl-conf{ grid-template-columns:1fr; }
 }
 @media (max-width: 600px){
   .pl-par{ padding:12px 12px; border-radius:12px; }
@@ -5705,15 +5706,18 @@
      Sta al posto del compilatore di Bilancio Facile con lo STESSO contratto (CED.attivo, wire, raccogli, cortesia,
      cortesiaSoluzione, mostraSoluzione, mostraFoglio, scorciatoie, vociStrane, confronto, statoSoluzione, pieno):
      tutto il resto dell'app (PIN, presenza, pallino, compiti, consegne, area docente) e' quello di Cedolino e Bilancio.
-     Le regole sono quelle del mock-up approvato da Mauro l'11/11/2026:
      - FACILE e MEDIO: la risposta alla domanda di economia compare un paragrafo alla volta, scritta come sul foglio
        protocollo; le parole che contano stanno in riquadri numerati, uno solo acceso (blu); sotto la frase le tre
-       scelte; «Controlla» colora il paragrafo (verde giusta, rossa sbagliata con dentro la giusta, «Avevi scelto «X».»
-       e il perche'); poi compare il paragrafo dopo. In fondo «Hai fatto N giuste su M» e la proposta di soluzione.
+       scelte. La parola scelta entra nella frase in semigrassetto, SENZA riquadro, e si cambia toccandola.
+       11/11/2026 mattina, decisione di Mauro: NIENTE «Controlla» e niente giusto/sbagliato mentre si lavora. Ogni
+       paragrafo si rifa' («Rifai questo paragrafo»), si va avanti col pulsante, si ricomincia da capo quando si vuole.
+       La CORREZIONE arriva solo DOPO LA CONSEGNA: «Giuste: N su M», la risposta del ragazzo con le parti giuste in
+       verde e quelle sbagliate in rosso (accanto, in verde, la giusta, e sotto il perche'), poi la risposta corretta
+       tutta di seguito. La stessa correzione la vede il docente.
        Il medio ha solo PIU' riquadri (mai scrittura mescolata alle scelte: bocciata da lui).
      - DIFFICILE: un riquadro vuoto; dopo la consegna la proposta di soluzione, nessuna correzione.
-     - «Ricomincia da capo» sempre a portata di mano. L'ordine delle scelte si sorteggia una volta e resta salvato.
-     Lo stato sta nel data-stato di #ced-stato: { es, scelte:{ r1:'testo scelto' }, fatti:[0,1], ordine:{ r1:[..] }, testo }.
+     Lo stato sta nel data-stato di #ced-stato: { es, scelte:{ r1:'testo scelto' }, fatti:[0,1] (paragrafi superati con
+     «Paragrafo successivo»), ordine:{ r1:[..] } (ordine delle scelte sorteggiato una volta), testo }.
      ========================================================= */
   var CED = (function(){
     function byIdC(id){ return document.getElementById(id); }
@@ -5790,28 +5794,29 @@
     function visibili(S, st){ var v = 0; while(v < S.par.length && fatto(st, v)) v++; return Math.min(v + 1, S.par.length); }
 
     /* ---------- i pezzi di testo ---------- */
-    // modo: 'lavoro' (si sceglie), 'sola' (tutto segnato: dopo la consegna e per il docente), 'bella' (prima della
-    // consegna: segnati solo i paragrafi gia' controllati)
-    function htmlRiquadro(r, st, modo, k){
+    // modo: 'lavoro' (si sceglie), 'bella' (prima della consegna: le scelte, senza giudizio), 'sola' (la CORREZIONE:
+    // dopo la consegna e per il docente)
+    function htmlRiquadro(r, st, modo){
       var sc = st.scelte[r.id];
-      var segna = (modo === 'sola') || ((modo === 'lavoro' || modo === 'bella') && fatto(st, k));
-      if(segna){
-        if(sc === r.g) return '<span class="pl-rq ok">' + escB(r.g) + '</span>';
-        if(modo === 'lavoro') return '<span class="pl-rq no">' + escB(r.g) + '</span>';   // nel lavoro: dentro c'e' la giusta
-        return '<span class="pl-rq no">' + (sc ? escB(sc) : 'non scelto') + '</span><span class="pl-giusta"> giusta: ' + escB(r.g) + '</span>';
+      if(modo === 'sola'){
+        if(sc === r.g) return '<span class="pl-ok">' + escB(r.g) + '</span>';
+        return '<span class="pl-no">' + (sc ? escB(sc) : 'non scelto') + '</span><span class="pl-freccia"> → </span><span class="pl-cor">' + escB(r.g) + '</span>';
       }
       if(modo === 'lavoro'){
-        var cls = 'pl-rq' + (sc ? ' pieno' : ' vuoto') + (ATTIVO === r.id ? ' attivo' : '');
-        return '<span class="' + cls + '" data-id="' + r.id + '" role="button" tabindex="0">' + (sc ? '' : '<span class="pl-n">' + r.n + '</span>')
-          + '<span class="pl-t">' + (sc ? escB(sc) : 'scegli') + '</span></span>';
+        if(ATTIVO === r.id){
+          return '<span class="pl-rq attivo' + (sc ? ' pieno' : '') + '" data-id="' + r.id + '" role="button" tabindex="0"><span class="pl-n">' + r.n + '</span>'
+            + '<span class="pl-t">' + (sc ? escB(sc) : 'scegli') + '</span></span>';
+        }
+        if(sc) return '<span class="pl-sc" data-id="' + r.id + '" role="button" tabindex="0" title="Tocca per cambiare">' + escB(sc) + '</span>';
+        return '<span class="pl-rq vuoto" data-id="' + r.id + '" role="button" tabindex="0"><span class="pl-n">' + r.n + '</span><span class="pl-t">scegli</span></span>';
       }
-      return sc ? '<span class="pl-rq pieno">' + escB(sc) + '</span>' : '<span class="pl-rq vuoto"><span class="pl-t">……</span></span>';
+      return sc ? '<span class="pl-sc fermo">' + escB(sc) + '</span>' : '<span class="pl-vuoto">……</span>';
     }
     function htmlTesto(S, st, k, modo){
       var righe = [], cur = '';
       (S.par[k] || []).forEach(function(p){
         if(p.a){ if(cur) righe.push(cur); cur = ''; }
-        else if(p.r) cur += htmlRiquadro(p.r, st, modo, k);
+        else if(p.r) cur += htmlRiquadro(p.r, st, modo);
         else cur += escB(p.t);
       });
       if(cur) righe.push(cur);
@@ -5838,8 +5843,21 @@
         return t ? '<div class="pl-scritto">' + escB(st.testo) + '</div>' : '<div class="pl-scritto vuoto">Nessuna risposta scritta.</div>';
       }
       var h = '';
-      if(modo === 'sola'){ var tutti = tuttiR(S); h += '<div class="pl-conto">Riquadri giusti: ' + giusteIn(tutti, st) + ' su ' + tutti.length + '</div>'; }
-      for(var k = 0; k < S.par.length; k++) h += '<div class="pl-par-sola">' + htmlTesto(S, st, k, modo) + '</div>';
+      if(modo === 'sola'){
+        var tutti = tuttiR(S), g = giusteIn(tutti, st);
+        h += '<div class="pl-conto' + (g === tutti.length ? ' bene' : '') + '">Giuste: ' + g + ' su ' + tutti.length + '.</div>'
+          + '<p class="pl-legenda">In verde le parti giuste. In rosso quelle sbagliate: accanto, in verde, c’è quella giusta, e sotto il perché.</p>';
+      }
+      for(var k = 0; k < S.par.length; k++){
+        h += '<div class="pl-par-sola">' + htmlTesto(S, st, k, modo);
+        if(modo === 'sola'){
+          riquadriPar(S, k).forEach(function(r){
+            var sc = st.scelte[r.id]; if(sc === r.g) return;
+            h += '<div class="pl-nota"><b>' + (sc ? 'Al posto di «' + escB(r.g) + '» hai scelto «' + escB(sc) + '». ' : 'Non hai scelto niente al posto di «' + escB(r.g) + '». ') + '</b>' + escB(sc ? perche(r, sc) : '') + '</div>';
+          });
+        }
+        h += '</div>';
+      }
       return h;
     }
 
@@ -5861,41 +5879,30 @@
         var ta = byIdC('pl-testo'); ta.value = ST.testo || ''; cresci(ta);
         return;
       }
-      h += '<p class="pl-istr">La risposta compare un paragrafo alla volta. Tocca il riquadro blu e scegli che cosa ci va. Quando il paragrafo è completo, premi «Controlla».</p>';
+      h += '<p class="pl-istr">La risposta compare un paragrafo alla volta. Tocca il riquadro blu e scegli che cosa ci va; per cambiare una scelta, toccala. La correzione arriva dopo la consegna.</p>';
       var nv = visibili(S, ST);
-      for(var k = 0; k < nv; k++) h += htmlParagrafo(S, k);
+      for(var k = 0; k < nv; k++) h += htmlParagrafo(S, k, nv);
       if(ST.fatti.length >= S.par.length && S.par.length){
-        var tutti = tuttiR(S), g = giusteIn(tutti, ST);
-        h += '<div class="pl-fine"><div class="pl-totale">Hai fatto ' + g + (g === 1 ? ' giusta su ' : ' giuste su ') + tutti.length + '.</div>'
-          + '<div class="pl-fine-k">Proposta di soluzione</div><div class="pl-fine-t">La stessa risposta, tutta di seguito.</div>'
-          + '<p class="pl-istr">È la risposta che hai appena completato un paragrafo alla volta, qui scritta tutta di seguito. È una proposta di soluzione valida e completa: quando svolgerai l’UdA, sul foglio protocollo potrai scrivere una risposta come questa. Adesso premi «Consegna».</p>'
-          + corpoSoluzione(null, S) + '</div>';
+        h += '<div class="pl-fine"><div class="pl-fine-t">Hai completato la risposta.</div>'
+          + '<p class="pl-istr">Rileggila con calma: per cambiare una parola toccala, per rifare un paragrafo usa «Rifai questo paragrafo». Quando sei convinto, consegna: dopo la consegna vedrai la correzione e la risposta corretta, tutta di seguito.</p>'
+          + '<div class="pl-com"><button type="button" class="pl-avanti" data-consegna="1">Consegna</button></div></div>';
       }
       area.innerHTML = '<div class="pl-es">' + h + '</div>';
     }
-    function htmlParagrafo(S, k){
-      var ok = fatto(ST, k), rs = riquadriPar(S, k);
-      var h = '<div class="pl-par' + (ok ? ' fatto' : '') + '" data-k="' + k + '"><div class="pl-num">Paragrafo ' + (k + 1) + ' di ' + S.par.length + '</div>'
+    function htmlParagrafo(S, k, nv){
+      var rs = riquadriPar(S, k), messi = rs.filter(function(r){ return !!ST.scelte[r.id]; }).length;
+      var h = '<div class="pl-par" data-k="' + k + '"><div class="pl-num">Paragrafo ' + (k + 1) + ' di ' + S.par.length + '</div>'
         + '<div class="pl-testo">' + htmlTesto(S, ST, k, 'lavoro') + '</div>';
-      if(!ok){
-        var att = ATTIVO ? rs.filter(function(r){ return r.id === ATTIVO; })[0] : null;
-        if(att){
-          h += '<div class="pl-scelte"><div class="pl-scelte-t">Che cosa va nel riquadro <span class="pl-n">' + att.n + '</span>?</div>'
-            + ordine(att).map(function(t){ return '<button type="button" class="pl-opz" data-r="' + att.id + '" data-t="' + escB(t) + '" aria-pressed="' + (ST.scelte[att.id] === t ? 'true' : 'false') + '">' + escB(t) + '</button>'; }).join('')
-            + '</div>';
-        }
-        h += '<div class="pl-com"><button type="button" class="pl-contr" data-k="' + k + '">Controlla</button><span class="pl-msg" id="pl-msg-' + k + '"></span></div>';
-      } else {
-        var q = giusteIn(rs, ST);
-        h += '<div class="pl-esito"><div class="pl-somma ' + (q === rs.length ? 'bene' : 'male') + '">'
-          + (q === rs.length ? 'Tutto giusto.' : (q + (q === 1 ? ' giusta su ' : ' giuste su ') + rs.length + '. Il riquadro rosso è quello sbagliato: ora dentro c’è la risposta giusta.')) + '</div>';
-        rs.forEach(function(r){
-          var sc = ST.scelte[r.id];
-          if(sc === r.g) return;
-          h += '<div class="pl-nota"><b>' + (sc ? 'Avevi scelto «' + escB(sc) + '». ' : 'Non avevi scelto niente. ') + '</b>' + escB(sc ? perche(r, sc) : '') + '</div>';
-        });
-        h += '</div>';
+      var att = ATTIVO ? rs.filter(function(r){ return r.id === ATTIVO; })[0] : null;
+      if(att){
+        h += '<div class="pl-scelte"><div class="pl-scelte-t">Che cosa va nel riquadro <span class="pl-n">' + att.n + '</span>?</div>'
+          + ordine(att).map(function(t){ return '<button type="button" class="pl-opz" data-r="' + att.id + '" data-t="' + escB(t) + '" aria-pressed="' + (ST.scelte[att.id] === t ? 'true' : 'false') + '">' + escB(t) + '</button>'; }).join('')
+          + '</div>';
       }
+      var bott = '';
+      if(k === nv - 1 && !fatto(ST, k)) bott += '<button type="button" class="pl-avanti" data-k="' + k + '">' + (k < S.par.length - 1 ? 'Paragrafo successivo' : 'Ho finito') + '</button>';
+      if(messi) bott += '<button type="button" class="pl-rifai" data-rifai="' + k + '">Rifai questo paragrafo</button>';
+      if(bott) h += '<div class="pl-com">' + bott + '<span class="pl-msg" id="pl-msg-' + k + '"></span></div>';
       return h + '</div>';
     }
     function cresci(t){ try{ t.style.height = 'auto'; t.style.height = (t.scrollHeight + 3) + 'px'; }catch(e){} }
@@ -5909,16 +5916,16 @@
       if(!ST) return;
       var S = struttura(ST.es); if(S.liv === 'd') return;
       var nv = visibili(S, ST), k = nv - 1;
-      if(k < 0 || fatto(ST, k)) { ATTIVO = null; return; }
+      if(k < 0) { ATTIVO = null; return; }
       var r = primoVuoto(S, k, null); ATTIVO = r ? r.id : null;
     }
     function scegli(id, t){
-      var S = struttura(ST.es), r = trovaR(S, id); if(!r || fatto(ST, r.k)) return;
+      var S = struttura(ST.es), r = trovaR(S, id); if(!r) return;
       ST.scelte[id] = t;
       var dopo = primoVuoto(S, r.k, id); ATTIVO = dopo ? dopo.id : null;
       cambiato(); disegna();
     }
-    function controlla(k){
+    function avanti(k){
       var S = struttura(ST.es), rs = riquadriPar(S, k);
       var mancano = rs.filter(function(r){ return !ST.scelte[r.id]; });
       if(mancano.length){
@@ -5929,8 +5936,14 @@
       if(!fatto(ST, k)) ST.fatti.push(k);
       ATTIVO = null; accendiPrimo();
       cambiato(); disegna();
-      var p = document.querySelector('#bil-area .pl-par[data-k="' + k + '"] .pl-esito');
-      if(p){ try{ p.scrollIntoView({ behavior:'smooth', block:'nearest' }); }catch(e){} }
+      var p = document.querySelector('#bil-area .pl-par[data-k="' + (k + 1) + '"]') || document.querySelector('#bil-area .pl-fine');
+      if(p){ try{ p.scrollIntoView({ behavior:'smooth', block:'start' }); }catch(e){} }
+    }
+    function rifai(k){
+      var S = struttura(ST.es);
+      riquadriPar(S, k).forEach(function(r){ delete ST.scelte[r.id]; });
+      var r0 = riquadriPar(S, k)[0]; ATTIVO = r0 ? r0.id : null;
+      cambiato(); disegna();
     }
     function ricomincia(){
       var vai = function(){ ST = normalizza({ es:ST.es }, ST.es); ATTIVO = null; accendiPrimo(); cambiato(); disegna(); try{ byIdC('editor').scrollIntoView({ behavior:'smooth', block:'start' }); }catch(e){} };
@@ -5940,15 +5953,17 @@
     function attivoQui(e){
       if(SOLA || !ST) return;
       var t = e.target;
-      var rq = t.closest ? t.closest('.pl-rq[data-id]') : null;
-      if(rq){ var S = struttura(ST.es), r = trovaR(S, rq.getAttribute('data-id')); if(r && !fatto(ST, r.k)){ ATTIVO = r.id; disegna(); } return; }
+      var rq = t.closest ? t.closest('[data-id]') : null;
+      if(rq && rq.closest('#bil-area')){ var S = struttura(ST.es), r = trovaR(S, rq.getAttribute('data-id')); if(r){ ATTIVO = (ATTIVO === r.id && ST.scelte[r.id]) ? null : r.id; disegna(); } return; }
       var op = t.closest ? t.closest('.pl-opz') : null;
       if(op){ scegli(op.getAttribute('data-r'), op.getAttribute('data-t')); return; }
-      var c = t.closest ? t.closest('.pl-contr') : null;
-      if(c){ controlla(Number(c.getAttribute('data-k'))); return; }
+      var ri = t.closest ? t.closest('[data-rifai]') : null;
+      if(ri){ rifai(Number(ri.getAttribute('data-rifai'))); return; }
+      var c = t.closest ? t.closest('.pl-avanti') : null;
+      if(c){ if(c.getAttribute('data-consegna')){ var f = byIdC('btn-fin'); if(f) f.click(); return; } avanti(Number(c.getAttribute('data-k'))); return; }
     }
 
-    /* ---------- la bella copia, la soluzione, il confronto ---------- */
+    /* ---------- la bella copia, la soluzione, la correzione ---------- */
     function cortesia(stato){
       var st = normalizza(stato || {}, esCorrente());
       var S = struttura(st.es);
@@ -5958,18 +5973,20 @@
     function statoSoluzione(sol, es){ return sol ? { es:(es || esCorrente()), sol:sol } : null; }
     function cortesiaSoluzione(sol){
       var es = esCorrente(), S = struttura(es);
-      return '<div class="pl-cortesia">' + boxDomanda(S) + '<div class="pl-cortesia-k giusto">Proposta di soluzione</div>' + corpoSoluzione(sol, S) + '</div>';
+      return '<div class="pl-cortesia">' + boxDomanda(S) + '<div class="pl-cortesia-k giusto">La risposta corretta, tutta di seguito</div>' + corpoSoluzione(sol, S) + '</div>';
     }
-    /* IL CONFRONTO (vista a schede del docente e dell'alunno, file esportati): la sua risposta accanto alla proposta. */
+    /* LA CORREZIONE (dopo la consegna, per l'alunno e per il docente, e nei file esportati): una colonna sola.
+       Facile e medio: «Giuste: N su M», la sua risposta corretta (verde le giuste; rosse le sbagliate con accanto la giusta
+       e sotto il perche'), poi la risposta corretta tutta di seguito. Difficile: la sua risposta, poi la proposta. */
     function confronto(quale, statoAl, statoSol, etichettaSua, nonSvolta){
       var es = (statoSol && statoSol.es) || (statoAl && statoAl.es) || esCorrente();
-      var S = struttura(es);
+      var S = struttura(es), et = etichettaSua || 'La tua risposta';
       var sua = nonSvolta ? '<div class="cx-nonsvolta">Risposta non compilata</div>'
               : (statoAl ? corpoRisposta(S, normalizza(statoAl, es), 'sola') : '<i>—</i>');
-      return '<div class="pl-conf-wrap">' + boxDomanda(S) + '<div class="pl-conf">'
-        + '<div><div class="pl-conf-k">' + escB(etichettaSua || 'La tua risposta') + '</div>' + sua + '</div>'
-        + '<div><div class="pl-conf-k giusto">Proposta di soluzione</div>' + corpoSoluzione(statoSol ? statoSol.sol : null, S) + '</div>'
-        + '</div></div>';
+      return '<div class="pl-conf-wrap">' + boxDomanda(S)
+        + '<div class="pl-conf-k">' + escB(et) + (S.liv === 'd' ? '' : ', corretta') + '</div>' + sua
+        + '<div class="pl-conf-k giusto">' + (S.liv === 'd' ? 'Proposta di soluzione' : 'La risposta corretta, tutta di seguito') + '</div>'
+        + corpoSoluzione(statoSol ? statoSol.sol : null, S) + '</div>';
     }
 
     /* ---------- costruzione, come wire() del cedolino ---------- */
@@ -5993,7 +6010,7 @@
       if(area && !area.getAttribute('data-pl')){
         area.setAttribute('data-pl', '1');
         area.addEventListener('click', attivoQui);
-        area.addEventListener('keydown', function(e){ if((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('.pl-rq[data-id]')){ e.preventDefault(); attivoQui(e); } });
+        area.addEventListener('keydown', function(e){ if((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('[data-id]')){ e.preventDefault(); attivoQui(e); } });
         area.addEventListener('input', function(e){ if(e.target && e.target.id === 'pl-testo' && !SOLA && ST){ ST.testo = e.target.value; cresci(e.target); scriviStato(); } });
       }
       accendiPrimo();
@@ -6018,7 +6035,7 @@
       resetEditor();
       var es = esCorrente(), S = struttura(es);
       var area = byIdC('bil-area');
-      if(area) area.innerHTML = '<div class="pl-es">' + boxDomanda(S) + '<div class="pl-cortesia-k giusto">Proposta di soluzione</div>' + corpoSoluzione(sol, S) + '</div>';
+      if(area) area.innerHTML = '<div class="pl-es">' + boxDomanda(S) + '<div class="pl-cortesia-k giusto">La risposta corretta, tutta di seguito</div>' + corpoSoluzione(sol, S) + '</div>';
       var liv = byIdC('pl-liv'); if(liv) liv.textContent = LIV_NOME[S.liv] || '';
       SOLA = true;
       lockEditor();
@@ -7932,7 +7949,7 @@
      il lavoro, telefono e cloud). Mai sulla schermata del consegnato, mai durante una consegna, mai al docente.
      Il ricarico e' un F5: in classe si torna sul foglio, nei compiti alla lista. Al massimo una volta ogni
      10 minuti, cosi' un sito che risponde a meta' non la fa ricaricare in continuazione. */
-  var VERSIONE_APP = '20261111-01';
+  var VERSIONE_APP = '20261111-02';
   (function(){
     var ultimo = 0, inCorso = false;
     function visibile(id){ var el = byId(id); return !!(el && el.style.display !== 'none'); }
