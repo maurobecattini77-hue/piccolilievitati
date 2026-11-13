@@ -553,7 +553,7 @@
     .vc-spacer{ margin-left:0; width:100%; }
     /* (25/09/2026) Barra ferma compatta sul telefono: le schede su UNA riga; la riga «Scarica PDF / Ho finito» sta
        sopra e, quando la barra si ferma in alto, scorre via (il top negativo lo calcola vcAggiustaFissa). */
-    /* (13/11/2026, iPhone di Lisa in 4F, Safari 17.4) Le schede in fila con flex e la colonna senza «a capo»: con la
+    /* (13/11/2026, iPhone di un alunno con Safari 17.4) Le schede in fila con flex e la colonna senza «a capo»: con la
        griglia dentro questa colonna i Safari vecchi facevano il pulsante «La risposta» alto quanto lo schermo. */
     .vc-row{ flex-direction:column-reverse; flex-wrap:nowrap; align-items:stretch; gap:8px; }
     .vc-tabs{ display:flex; flex-wrap:nowrap; gap:6px; }
@@ -8010,7 +8010,7 @@
      il lavoro, telefono e cloud). Mai sulla schermata del consegnato, mai durante una consegna, mai al docente.
      Il ricarico e' un F5: in classe si torna sul foglio, nei compiti alla lista. Al massimo una volta ogni
      10 minuti, cosi' un sito che risponde a meta' non la fa ricaricare in continuazione. */
-  var VERSIONE_APP = '20261113-01';
+  var VERSIONE_APP = '20261113-02';
   (function(){
     var ultimo = 0, inCorso = false;
     function visibile(id){ var el = byId(id); return !!(el && el.style.display !== 'none'); }
