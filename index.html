@@ -5224,7 +5224,7 @@
     // e ripristina l'eventuale lavoro salvato per questa esercitazione.
     // Recupero del lavoro in corso: tengo SEMPRE la versione PIÙ RECENTE, confrontando la copia LOCALE (su questo
     // dispositivo) con quella nel CLOUD, ognuna con il suo orario (ts). Così, cambiando dispositivo o rientrando,
-    // non ricompare più una versione vecchia al posto dell'ultima scritta (il caso "Pinco Pallino / merda").
+    // non ricompare più una versione vecchia al posto dell'ultima scritta (il caso "Pinco Pallino / prova").
     var local = null;
     try{
       sessionStorage.setItem('pl_studente_attivo', STATE.studente.pin);
@@ -8010,7 +8010,7 @@
      il lavoro, telefono e cloud). Mai sulla schermata del consegnato, mai durante una consegna, mai al docente.
      Il ricarico e' un F5: in classe si torna sul foglio, nei compiti alla lista. Al massimo una volta ogni
      10 minuti, cosi' un sito che risponde a meta' non la fa ricaricare in continuazione. */
-  var VERSIONE_APP = '20261113-02';
+  var VERSIONE_APP = '20261116-01';
   (function(){
     var ultimo = 0, inCorso = false;
     function visibile(id){ var el = byId(id); return !!(el && el.style.display !== 'none'); }
