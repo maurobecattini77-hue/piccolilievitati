@@ -702,6 +702,14 @@
   .pl-cortesia, .pl-conf-wrap{ padding:14px 12px 18px; }
   .pl-domanda{ padding:12px 14px; }
 }
+/* compiti a casa (17/11/2026, Mauro): le due modalità in cima all'elenco, «Modalità media» e «Modalità difficile» */
+.pl-modi{ display:flex; gap:8px; margin:0 0 4px; }
+.pl-modo{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:2px; background:#fff; border:1.5px solid var(--b-l);
+  border-radius:12px; padding:10px 10px; font-family:inherit; cursor:pointer; color:var(--b-b); text-align:center; }
+.pl-modo-t{ font-size:15.5px; font-weight:600; }
+.pl-modo-n{ font-size:13px; color:var(--b-muted); }
+.pl-modo.attivo{ background:var(--b-b); border-color:var(--b-b); color:#fff; }
+.pl-modo.attivo .pl-modo-n{ color:#efe6f3; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -7082,7 +7090,30 @@
        nell'archivio porta "verifica": true non compare qui (e il server non ne da' mai la soluzione agli alunni). */
     /* Piccoli lievitati (11/11/2026, regola di Mauro): a casa si fa SOLO il livello difficile, senza voto; dopo la
        consegna l'alunno vede la proposta di soluzione. Facile e medio si fanno in classe, quando li assegna il docente. */
-    (FATTURE || []).filter(function(f){ return !f.verifica && Number(f.difficolta) === 3; }).sort(function(a, b){ return (parseInt(numeroFattura(a.id), 10) || 0) - (parseInt(numeroFattura(b.id), 10) || 0); }).forEach(function(f){
+    /* Piccoli lievitati (17/11/2026, Mauro): nei compiti ci sono anche i dolci SOLO MEDI (pl.compito nell'archivio), in
+       «modalità media». In cima due pulsanti, «Modalità media» e «Modalità difficile», con quanti ne ha fatti in ognuna:
+       l'alunno vede sempre in quale modalità e'. La scelta resta sul dispositivo. */
+    var compMedi = (FATTURE || []).filter(function(f){ return !f.verifica && f.pl && f.pl.compito; });
+    var compDiff = (FATTURE || []).filter(function(f){ return !f.verifica && Number(f.difficolta) === 3; });
+    if(!STATE.compitiModo){ try{ STATE.compitiModo = localStorage.getItem('pl_modo_compiti') || ''; }catch(e){} }
+    var modo = (STATE.compitiModo === 'difficile') ? 'difficile' : 'media';
+    if(!compMedi.length) modo = 'difficile';
+    if(!compDiff.length) modo = 'media';
+    var fattoQ = function(f){ var q = Q[f.id] || {}; return !!q.consegnato || done.indexOf(f.id) !== -1; };
+    if(compMedi.length && compDiff.length){
+      var modi = document.createElement('div'); modi.className = 'pl-modi'; modi.setAttribute('role', 'group'); modi.setAttribute('aria-label', 'Modalità dei compiti');
+      [['media', 'Modalità media', compMedi], ['difficile', 'Modalità difficile', compDiff]].forEach(function(m){
+        var bm = document.createElement('button'); bm.type = 'button'; bm.className = 'pl-modo' + (modo === m[0] ? ' attivo' : '');
+        bm.setAttribute('aria-pressed', modo === m[0] ? 'true' : 'false'); bm.setAttribute('data-modo', m[0]);
+        var bt = document.createElement('span'); bt.className = 'pl-modo-t'; bt.textContent = m[1];
+        var bn = document.createElement('span'); bn.className = 'pl-modo-n'; bn.textContent = 'Fatti ' + m[2].filter(fattoQ).length + ' su ' + m[2].length;
+        bm.appendChild(bt); bm.appendChild(bn);
+        bm.addEventListener('click', function(){ if(modo === m[0]) return; STATE.compitiModo = m[0]; try{ localStorage.setItem('pl_modo_compiti', m[0]); }catch(e){} renderCompitiPicker(); });
+        modi.appendChild(bm);
+      });
+      list.appendChild(modi);
+    }
+    (modo === 'media' ? compMedi : compDiff).sort(function(a, b){ return (parseInt(numeroFattura(a.id), 10) || 0) - (parseInt(numeroFattura(b.id), 10) || 0); }).forEach(function(f){
       tot++;
       var q = Q[f.id] || {};
       var fatta = !!q.consegnato || done.indexOf(f.id) !== -1; if(fatta) fatti++;
@@ -7115,7 +7146,9 @@
       }
       row.appendChild(num); row.appendChild(info); row.appendChild(cta); list.appendChild(row);
     });
-    byId('menu-sub').textContent = 'Scegli un dolce, scrivi la tua risposta e consegnala al prof. Il tuo lavoro si salva da solo e lo ritrovi su qualsiasi dispositivo. Dopo la consegna vedrai la proposta di soluzione, da confrontare con la tua. Ogni esercizio si consegna una volta sola; poi puoi allenarti quante volte vuoi (senza inviarlo). (Fatti ' + fatti + ' su ' + tot + ')';
+    byId('menu-sub').textContent = (modo === 'media'
+      ? 'Modalità media: scegli un dolce, completa la risposta scegliendo che cosa va in ogni riquadro e consegnala al prof. Il tuo lavoro si salva da solo e lo ritrovi su qualsiasi dispositivo. Dopo la consegna vedrai la correzione e la risposta corretta. Ogni esercizio si consegna una volta sola; poi puoi allenarti quante volte vuoi (senza inviarlo).'
+      : 'Scegli un dolce, scrivi la tua risposta e consegnala al prof. Il tuo lavoro si salva da solo e lo ritrovi su qualsiasi dispositivo. Dopo la consegna vedrai la proposta di soluzione, da confrontare con la tua. Ogni esercizio si consegna una volta sola; poi puoi allenarti quante volte vuoi (senza inviarlo).') + ' (Fatti ' + fatti + ' su ' + tot + ')';
     // I voti PUBBLICATI (27/09/2026, regola di Mauro): quelli delle verifiche in cima, uno sotto l'altro in ordine di
     // data (restano anche dopo il Reset); quelli delle esercitazioni dentro la riga del loro esercizio.
     var pin0 = STATE.studente ? STATE.studente.pin : '';
@@ -8010,7 +8043,7 @@
      il lavoro, telefono e cloud). Mai sulla schermata del consegnato, mai durante una consegna, mai al docente.
      Il ricarico e' un F5: in classe si torna sul foglio, nei compiti alla lista. Al massimo una volta ogni
      10 minuti, cosi' un sito che risponde a meta' non la fa ricaricare in continuazione. */
-  var VERSIONE_APP = '20261116-01';
+  var VERSIONE_APP = '20261117-01';
   (function(){
     var ultimo = 0, inCorso = false;
     function visibile(id){ var el = byId(id); return !!(el && el.style.display !== 'none'); }
